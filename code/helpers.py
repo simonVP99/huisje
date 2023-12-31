@@ -58,7 +58,7 @@ def calculate_net_value_addition(salary, outstanding_capital, expenditure_percen
     net_value_addition = net_salary * (1 - expenditure_percentage)
     return net_value_addition, net_salary
 
-def update_yearly_status(salary, house_value, debt, annual_loan_payment, property_tax, inflation_rate, salary_growth_rate, property_appreciation_rate):
+def update_yearly_status(salary, house_value, debt, annual_loan_payment, property_tax, inflation_rate, salary_growth_rate, property_appreciation_rate, expenditure_percentage):
     """
     Update the financial status for the year, including salary, house value, and debt.
 
@@ -85,3 +85,42 @@ def update_yearly_status(salary, house_value, debt, annual_loan_payment, propert
     updated_debt = debt - annual_loan_payment
 
     return updated_salary, cash_gain, updated_house_value, updated_debt
+
+
+def calculate_house_purchase_costs(purchase_price, loan_percentage, additional_costs_percentage, loan_interest_rate, loan_term_years):
+    """
+    Calculate various financial aspects related to purchasing a house.
+
+    Parameters:
+    - purchase_price (float): Purchase price of the house.
+    - loan_percentage (float): Percentage of the purchase price financed through a loan.
+    - additional_costs_percentage (float): Additional costs as a percentage of the purchase price.
+    - loan_interest_rate (float): Annual interest rate of the loan.
+    - loan_term_years (int): Loan term in years.
+
+    Returns:
+    - total_loan_cost (float): Total cost of the loan.
+    - down_payment (float): Down payment including additional purchase costs.
+    - monthly_loan_payment (float): Monthly loan payment.
+    - total_purchase_cost (float): Total cost of purchasing the house including the loan and additional costs.
+    """
+    # Calculate the loan amount based on the purchase price and loan percentage
+    loan_amount = purchase_price * loan_percentage
+
+    # Calculate additional costs as a percentage of the purchase price
+    additional_costs = purchase_price * additional_costs_percentage
+
+    # Calculate the total loan cost using the loan amount, interest rate, and term
+    _, total_loan_cost = calculate_loan_cost(loan_amount, loan_interest_rate, loan_term_years)
+
+    # Calculate the initial out-of-pocket expense (down payment + additional costs)
+    down_payment = purchase_price * (1 - loan_percentage) + additional_costs
+
+    # Calculate annual and monthly loan payments
+    annual_loan_payment = total_loan_cost / loan_term_years
+    monthly_loan_payment = annual_loan_payment / 12
+
+    # Calculate the total price of purchasing the house (down payment + total loan cost)
+    total_purchase_cost = down_payment + total_loan_cost
+
+    return total_loan_cost, down_payment, monthly_loan_payment, total_purchase_cost
