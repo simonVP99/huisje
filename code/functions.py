@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
+import time
 
 def scrape_and_save(url, output_path):
     # Initialize the WebDriver
@@ -32,7 +33,21 @@ def scrape_and_save(url, output_path):
         )
         # Adjust the scroll to center the 'Toon meer details' button in view
         driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", details_button)
+        time.sleep(1)
         details_button.click()
+
+        # Try to find the second 'Meer details' button and click it if it exists
+        try:
+            more_details_button = WebDriverWait(driver, timeout).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "a.view-more-link"))
+            )
+            # Adjust the scroll to center the second 'Meer details' button in view
+            driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", more_details_button)
+            time.sleep(1)
+            more_details_button.click()
+        except Exception:
+            # If the 'Meer details' button does not exist, just pass
+            pass
 
     except Exception as e:
         print("Error: ", e)
@@ -54,6 +69,3 @@ def scrape_and_save(url, output_path):
 
     # Close the driver
     driver.quit()
-
-# Example usage of the function
-scrape_and_save('https://www.biddit.be/nl/catalog/detail/252452', 'output_file.txt')
